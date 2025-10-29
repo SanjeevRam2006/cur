@@ -1,0 +1,48 @@
+services:
+  - type: web
+    name: visionaryminds-rag
+    env: docker
+    rootDir: services/rag_service
+    plan: free
+    healthCheckPath: /
+    autoDeploy: true
+    dockerCommand: []
+    envVars:
+      - key: PORT
+        value: 8001
+
+  - type: web
+    name: visionaryminds-posture
+    env: docker
+    rootDir: services/posture_service
+    plan: free
+    healthCheckPath: /
+    autoDeploy: true
+    dockerCommand: []
+    envVars:
+      - key: PORT
+        value: 8002
+
+  - type: web
+    name: visionaryminds-backend
+    env: node
+    rootDir: backend
+    plan: free
+    buildCommand: npm install
+    startCommand: node src/server.js
+    healthCheckPath: /api/health
+    autoDeploy: true
+    envVars:
+      - key: PORT
+        value: 8000
+      - key: RAG_SERVICE_URL
+        fromService:
+          type: web
+          name: visionaryminds-rag
+          property: host
+          # Render will inject https://<rag-host>. Use full URL with https.
+      - key: POSTURE_SERVICE_URL
+        fromService:
+          type: web
+          name: visionaryminds-posture
+          property: host
