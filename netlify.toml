@@ -1,0 +1,6 @@
+[build]
+  command = "npx expo export:web"
+  publish = "dist"
+
+[build.environment]
+  EXPO_PUBLIC_API_BASE = "" # set to your backend public URL after Render deploy
